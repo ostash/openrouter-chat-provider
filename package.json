@@ -1,0 +1,92 @@
+{
+  "activationEvents": [
+    "onLanguageModelChatProvider:ostash.openrouter"
+  ],
+  "author": "Viktor Ostashevskyi",
+  "bugs": {
+    "url": "https://github.com/ostash/openrouter-chat-provider/issues"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "category": "ORCP",
+        "command": "orcp.setApiKey",
+        "title": "Set API Key"
+      },
+      {
+        "category": "ORCP",
+        "command": "orcp.clearApiKey",
+        "title": "Clear API Key"
+      }
+    ],
+    "configuration": {
+      "properties": {
+        "orcp.baseUrl": {
+          "title": "Base URL",
+          "default": "https://openrouter.ai/api/v1",
+          "description": "OpenRouter API base URL.",
+          "type": "string"
+        },
+        "orcp.models": {
+          "title": "Models",
+          "default": {},
+          "description": "Per-model configuration. Keys are OpenRouter model IDs (e.g. 'anthropic/claude-sonnet-4-5'). Set enabled to false to hide a model. Use effortLevels to expose reasoning effort variants (low, medium, high) for supported models. Example: { \"anthropic/claude-sonnet-4-5\": { \"enabled\": true, \"effortLevels\": [\"low\", \"medium\", \"high\"] } }. Models not listed are enabled by default with no effort variants.",
+          "type": "object"
+        }
+      },
+      "title": "OpenRouter Chat Provider"
+    },
+    "languageModelChatProviders": [
+      {
+        "displayName": "OpenRouter Chat Provider",
+        "vendor": "ostash.openrouter"
+      }
+    ]
+  },
+  "dependencies": {
+    "@openrouter/sdk": "^0.12.24"
+  },
+  "description": "Access 300+ OpenRouter models in Copilot Chat",
+  "devDependencies": {
+    "@types/node": "^22.x",
+    "@types/vscode": "^1.117.0",
+    "esbuild": "^0.28.0",
+    "eslint": "^10.3.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^6.0.0"
+  },
+  "displayName": "OpenRouter Chat Provider",
+  "engines": {
+    "vscode": "^1.117.0"
+  },
+  "icon": "assets/icon.png",
+  "keywords": [
+    "ai",
+    "copilot-chat",
+    "copilot",
+    "openrouter"
+  ],
+  "license": "MIT",
+  "main": "./dist/extension.js",
+  "name": "openrouter-chat-provider",
+  "publisher": "ostash",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ostash/openrouter-chat-provider.git"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "compile": "npm run check-types && node esbuild.js",
+    "clean": "node -e \"fs.rmSync('dist', {recursive: true, force: true})\"",
+    "package": "npm run check-types && node esbuild.js --production",
+    "vscode:prepublish": "npm run clean && npm run package",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json"
+  },
+  "version": "0.1.0"
+}

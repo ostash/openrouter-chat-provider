@@ -1,0 +1,7 @@
+node_modules/**
+out/**
+src/**
+.gitignore
+esbuild.js
+tsconfig.json
+vscode.proposed.languageModelThinkingPart.d.ts
