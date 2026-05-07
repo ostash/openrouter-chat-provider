@@ -36,6 +36,12 @@
           "default": {},
           "description": "Per-model configuration. Keys are OpenRouter model IDs (e.g. 'anthropic/claude-sonnet-4-5'). Set enabled to false to hide a model. Use effortLevels to expose reasoning effort variants (low, medium, high) for supported models. Example: { \"anthropic/claude-sonnet-4-5\": { \"enabled\": true, \"effortLevels\": [\"low\", \"medium\", \"high\"] } }. Models not listed are enabled by default with no effort variants.",
           "type": "object"
+        },
+        "orcp.sessionTracking": {
+          "title": "Session Tracking",
+          "default": false,
+          "description": "Enable OpenRouter session tracking. Groups requests from the same conversation under one session ID.",
+          "type": "boolean"
         }
       },
       "title": "OpenRouter Chat Provider"

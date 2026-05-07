@@ -2,6 +2,7 @@ import vscode from 'vscode';
 import { ModelRegistry } from './ModelRegistry';
 import { OpenRouterClient } from './OpenRouterClient';
 import { SessionTracker } from './SessionTracker';
+import { ConversationSessionManager } from './ConversationSessionManager';
 import { convertMessages, convertTools } from './messageConverter';
 import { handleStream } from './streamHandler';
 import { ModelEntry } from './types';
@@ -21,6 +22,8 @@ export class ChatProvider implements vscode.LanguageModelChatProvider<ModelEntry
     private readonly registry: ModelRegistry,
     private readonly client: OpenRouterClient,
     private readonly tracker: SessionTracker,
+    private readonly sessionManager: ConversationSessionManager,
+    private readonly sessionTracking: boolean,
   ) {
     this.onDidChangeLanguageModelChatInformation = this.registry.onDidChange.event;
   }
@@ -57,12 +60,18 @@ export class ChatProvider implements vscode.LanguageModelChatProvider<ModelEntry
     const abort = new AbortController();
     token.onCancellationRequested(() => abort.abort());
 
+    let sessionId: string | undefined;
+    if (this.sessionTracking) {
+      sessionId = await this.sessionManager.getOrCreateSession(messages);
+    }
+
     let stream: AsyncIterable<ChatStreamChunk>;
     try {
       stream = await this.client.streamChat(model.orModelId, orMessages, {
         effort,
         toolChoice,
         tools: orTools,
+        sessionId,
       }, abort.signal);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);

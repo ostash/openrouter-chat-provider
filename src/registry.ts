@@ -3,6 +3,7 @@ import { SecretsManager } from './SecretsManager';
 import { OpenRouterClient } from './OpenRouterClient';
 import { ModelRegistry } from './ModelRegistry';
 import { SessionTracker } from './SessionTracker';
+import { ConversationSessionManager } from './ConversationSessionManager';
 import { ChatProvider } from './ChatProvider';
 import { ModelConfig } from './types';
 
@@ -17,11 +18,13 @@ export async function registerAll(
   const cfg = vscode.workspace.getConfiguration('orcp');
   const baseUrl: string = cfg.get('baseUrl', 'https://openrouter.ai/api/v1');
   const modelConfigs: Record<string, ModelConfig> = cfg.get('models', {});
+  const sessionTracking: boolean = cfg.get('sessionTracking', false);
 
   const client = new OpenRouterClient(secrets, baseUrl);
   const registry = new ModelRegistry();
   const tracker = new SessionTracker();
-  const provider = new ChatProvider(registry, client, tracker);
+  const sessionManager = new ConversationSessionManager(context);
+  const provider = new ChatProvider(registry, client, tracker, sessionManager, sessionTracking);
 
   try {
     const rawModels = await client.listModels();
@@ -51,6 +54,7 @@ export async function registerAll(
       providerDisposable.dispose();
       registry.dispose();
       tracker.dispose();
+      sessionManager.dispose();
     },
   };
 }

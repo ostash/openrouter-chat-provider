@@ -80,6 +80,7 @@ export class OpenRouterClient {
       toolChoice: ChatToolChoice;
       tools?: ChatFunctionTool[];
       maxTokens?: number;
+      sessionId?: string;
     },
     signal: AbortSignal,
   ): Promise<AsyncIterable<ChatStreamChunk>> {
@@ -106,6 +107,10 @@ export class OpenRouterClient {
 
     if (opts.maxTokens) {
       chatRequest.maxTokens = opts.maxTokens;
+    }
+
+    if (opts.sessionId) {
+      chatRequest.sessionId = opts.sessionId;
     }
 
     const response = await client.chat.send(
